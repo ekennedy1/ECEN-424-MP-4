@@ -1,19 +1,26 @@
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.Scanner;
 
 
 public class Listener {
 
     public static void main(String[] args) throws Exception {
 
-        DatagramSocket dataSocket = new DatagramSocket();
+        //Scanner keyboard = new Scanner(System.in);
+        //System.out.print("Enter Listener Port Number: ");                                           // enter listener's port number
+        //int portNum = keyboard.nextInt();
 
-        String message = "Hello";
-        byte[] b = message.getBytes();
-        InetAddress address = InetAddress.getLocalHost();
+        DatagramSocket dataSocket = new DatagramSocket();                                      // 
+        InetAddress address = InetAddress.getByName("127.0.0.1");
+        //System.out.println(address.getHostName());
         
-        DatagramPacket dataPacket = new DatagramPacket(b, b.length, address, 20);               // for sending data
+
+        String message = "Listener says Hello";                                                      // sending message "Hello"
+        byte[] b = message.getBytes();
+        
+        DatagramPacket dataPacket = new DatagramPacket(b, b.length, address, 20);               // for sending data "Hello"
         dataSocket.send(dataPacket);                                                                 // data send
 
         byte[] b1 = new byte[1024]; 
