@@ -36,7 +36,7 @@ public class Talker {
 
         
     }
-    //This function will accept a 50-character String and break it down to 5 frames + zero frame with number of frames
+    //This function accepts a 50-character String and break it down to 5 frames + zero frame with number of frames
     public static String[] Frames(String message) {
         int num = message.length();
     
@@ -61,5 +61,26 @@ public class Talker {
                 
             }
             return frame;
+    }
+    
+    // this function accepts a String type ACK (example - "ACK5\n") and return the next frame index int
+    public static int nextFrameFromACK(String ACK) {
+
+        int i = 0;
+        boolean isNum = false;
+        String num = "";
+        int Num = 0;
+        char c = '0';
+        while (c != '\n') {
+            c = ACK.charAt(i);
+
+            if (isNum) {num = num + c; }
+            if (c == 'K') {isNum = true;}
+            i += 1;
+
+        }
+        num = num.strip();
+        Num = Integer.parseInt(num);
+        return Num;
     }
 }
