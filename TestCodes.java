@@ -3,15 +3,31 @@ import java.util.*;
 public class TestCodes {
     public static void main(String[] args) {
         String message = "This whole sentence is precisely fifty characters.";
-        String[] frame = new String[6];
-        frame = Frames(message); 
-
-        for (int i=0; i<6; i++) {
-            System.out.println(frame[i]);
-        }
+        String ACK = "ACK" + String.valueOf(5) + "\n";
+        System.out.println(ACK.strip());
         
     }
 
+
+    public static int nextFrameFromACK(String ACK) {
+
+        int i = 0;
+        boolean isNum = false;
+        String num = "";
+        int Num = 0;
+        char c = '0';
+        while (c != '\n') {
+            c = ACK.charAt(i);
+
+            if (isNum) {num = num + c; }
+            if (c == 'K') {isNum = true;}
+            i += 1;
+
+        }
+        num = num.strip();
+        Num = Integer.parseInt(num);
+        return Num;
+    }
 
     public static String[] Frames(String message) {
         int num = message.length();

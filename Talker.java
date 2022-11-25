@@ -13,27 +13,69 @@ public class Talker {
 
         String sentence = "This whole sentence is precisely fifty characters.";
         DatagramSocket dataSocket = new DatagramSocket(20);                                           // created with port num
-        byte[] b = new byte[1024];                                                                         // for receiving data
-        
-        while (true) {
-            DatagramPacket dataPacket = new DatagramPacket(b, b.length);                                   // receiving a packet
-            dataSocket.receive(dataPacket);
+        byte[] incomingBytes = new byte[1024];                                                                         // for receiving data
+        byte[] outgoingBytes = new byte[1024];
+        String incomingMessage = "";
+        String outgoingMessage = "";
+        String[] frame = new String[6];
+        InetAddress IPListener = null;
+        int port = 0;
+        System.out.println("Talker waiting on Listener..."); 
 
-            String message = new String(dataPacket.getData());
-            System.out.println("Message Received on Talker side : "+ message);                             // printout the message
 
-            InetAddress IPAddress = dataPacket.getAddress();                                               // IP extraction
-            int port = dataPacket.getPort();                                                               // port num extraction
-            System.out.println(IPAddress.getHostName());                                                   // print IP + port num
+        while (incomingMessage.length() == 0) {
+            DatagramPacket dataPacketIn = new DatagramPacket(incomingBytes, incomingBytes.length);                                   // receiving a packet
+            dataSocket.receive(dataPacketIn);
 
-            String newMessage = "Message Received on Talker!";
-            byte[] b1 = newMessage.getBytes();
-            DatagramPacket dataPacket1 = new DatagramPacket(b1, b1.length, IPAddress, port);
-            dataSocket.send(dataPacket1);
-            //dataSocket.close();
+            incomingMessage = new String(dataPacketIn.getData());
+            System.out.println(incomingMessage);                                                                   // printout the message
+
+            IPListener = dataPacketIn.getAddress();                                               // IP extraction
+            port = dataPacketIn.getPort();                                                               // port num extraction
+            //System.out.println(IPAddress.getHostName());                                                   // print IP + port num
+
+            outgoingMessage = "Talker requests a UDP connection!";
+            outgoingBytes = outgoingMessage.getBytes();
+            DatagramPacket dataPacketOut = new DatagramPacket(outgoingBytes, outgoingBytes.length, IPListener, port);
+            dataSocket.send(dataPacketOut);
 
         }
+        /* incomingMessage = "";
+        while ((true)) {
+            outgoingMessage = "Talker talks";
+            outgoingBytes = outgoingMessage.getBytes();
+            DatagramPacket dataPacketOut = new DatagramPacket(outgoingBytes, outgoingBytes.length, IPListener, port);
+            dataSocket.send(dataPacketOut);
 
+        } */
+
+
+        //frame the sentance into a String Array
+        frame = Frames(sentence);
+
+        int nextAckNum = 0;
+        while (nextAckNum < 6) {
+            outgoingMessage = frame[nextAckNum];                                         // send the ith frame
+            outgoingBytes = outgoingMessage.getBytes();
+            DatagramPacket dataPacketOut = new DatagramPacket(outgoingBytes, outgoingBytes.length, IPListener, port);
+            dataSocket.send(dataPacketOut);
+
+            // receiving ACK
+            DatagramPacket dataPacketIn = new DatagramPacket(incomingBytes, incomingBytes.length);                                   // receiving a packet
+            dataSocket.receive(dataPacketIn);
+
+            incomingMessage = new String(dataPacketIn.getData(), 0, dataPacketIn.getLength());
+            try {
+                nextAckNum = nextFrameFromACK(incomingMessage);
+                System.out.println("ACK received: " + String.valueOf(nextAckNum-1));           ////////////////printing statement
+            } 
+            catch (NumberFormatException e) {
+                System.out.println("ACT1 not received");
+                continue;
+            }
+
+        }
+        dataSocket.close();
         
     }
     //This function accepts a 50-character String and break it down to 5 frames + zero frame with number of frames
