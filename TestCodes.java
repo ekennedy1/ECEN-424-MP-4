@@ -2,9 +2,19 @@ import java.io.*;
 import java.util.*;
 public class TestCodes {
     public static void main(String[] args) {
-        String message = "This whole sentence is precisely fifty characters.";
-        String ACK = "ACK" + String.valueOf(5) + "\n";
-        System.out.println(ACK.strip());
+        String message = "4This whole";
+        //System.out.println(packet(message));
+        Date date = new Date();
+        long currentTime = date.getTime(); 
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        Date date1 = new Date();
+        long newTime = date1.getTime();
+        System.out.println((newTime - currentTime) / 1000);
         
     }
 
@@ -55,6 +65,15 @@ public class TestCodes {
             return frame;
     }
     
+    public static String packet(String frame) {
+        char c;
+        String word = "";
+        for (int i=1; i < frame.length(); i++ ) {
+            c = frame.charAt(i);
+            word = word + c;
+        }
+        return word;
+    }
 }
 
  

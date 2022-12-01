@@ -1,6 +1,7 @@
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.Date;
 import java.util.Scanner;
 
 public class Talker {
@@ -54,6 +55,11 @@ public class Talker {
         frame = Frames(sentence);
 
         int nextAckNum = 0;
+        int ack = 0;
+        int previousAck = -1;
+        Date date0 = new Date();
+        long starTime = date0.getTime();
+        long finishTime = starTime;
         while (nextAckNum < 6) {
             outgoingMessage = frame[nextAckNum];                                         // send the ith frame
             outgoingBytes = outgoingMessage.getBytes();
@@ -67,10 +73,11 @@ public class Talker {
             incomingMessage = new String(dataPacketIn.getData(), 0, dataPacketIn.getLength());
             try {
                 nextAckNum = nextFrameFromACK(incomingMessage);
-                System.out.println("ACK received: " + String.valueOf(nextAckNum-1));           ////////////////printing statement
+                ack = (nextAckNum-1);
+                System.out.println("ACK received: " + String.valueOf(ack));           ////////////////printing statement
             } 
             catch (NumberFormatException e) {
-                System.out.println("ACT1 not received");
+                System.out.println("ACK not received");
                 continue;
             }
 

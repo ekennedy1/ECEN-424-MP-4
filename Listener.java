@@ -60,6 +60,7 @@ public class Listener {
             dataSocket.send(dataPacketOut);
         }
         
+        
         int numberOfFrames = Integer.parseInt(incomingMessage.strip());
         while (i <= (numberOfFrames)) {
             i += 1;
@@ -70,7 +71,7 @@ public class Listener {
 
             ACK = "ACK" + String.valueOf(i) + "\n";
             System.out.println(ACK.strip());                                    ///////// printing statement
-            // send out the ACK
+            // send out the ACKs
             outgoingMessage = ACK;                                                          // sending message "Hello"
             outgoingBytes = outgoingMessage.getBytes();
         
@@ -82,4 +83,13 @@ public class Listener {
         dataSocket.close();
     }
 
+    public static String packet(String frame) {
+        char c;
+        String word = "";
+        for (int i=1; i < frame.length(); i++ ) {
+            c = frame.charAt(i);
+            word = word + c;
+        }
+        return word;
+    }
 }
